@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 700px;
+      margin: 100px auto;
+      background: linear-gradient(135deg, #f307c4, #e7a833, #3fb7f4c9, #f31eefc9);
+      padding: 0px;
+      border-radius: 15px;
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1{
+      text-align: center;
+      color: black;
+      margin-bottom: 20px;
+      font-size: 36px;
+    }
+
+    #chatbox {
+      background: #ffffffc9;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      box-shadow: inset 0 0 8px rgba(106, 105, 105, 0.428);
+      margin-bottom: 15px;
+      background-color: rgba(255,255,255,0.3);
+    }
+
+    .chat-entry {
+      margin-bottom: 10px;
+    }
+
+    .user {
+      font-weight: bold;
+      color: #00695c;
+    }
+
+    .bot {
+      margin-left: 10px;
+      color: #444;
+    }
+
+    #userInput {
+      width: 96%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    #sendBtn {
+      margin-top: 10px;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      background: linear-gradient(to right, #8d058b, #8d058b);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #sendBtn:hover {
+      background: linear-gradient(to right, #47014c, #47014c);
+    }
+  </style>
+</head>
+<body>
+
+  <h1> 💬 Smart Chatbot</h1>
+
+  <div id="chatbox"></div>
+
+  <input type="text" id="userInput" placeholder="Type your question..." />
+  <button id="sendBtn">Send</button>
+
+  <script>
+    const chatbox = document.getElementById("chatbox");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement("div");
+      msg.className = "chat-entry";
+      msg.innerHTML = `<span class="${sender}">${sender}:</span> <span>${text}</span>`;
+      chatbox.appendChild(msg);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const question = userInput.value.trim();
+      if (!question) return;
+
+      appendMessage("You", question);
+      userInput.value = "";
+
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+
+      const data = await response.json();
+      appendMessage("Bot", data.answer);
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+
+</body>
+</html>
