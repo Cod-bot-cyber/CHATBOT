@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS students (
 students_data = [
     (101, "Rahul", "Sharma", "10", "A"),
     (102, "Anjali", "Verma", "10", "B"),
-    (103, "Aman", "Gupta", "11", "A")
+    (103, "Aman", "Gupta", "11", "A"),
+    (104, "Ali" , "Mohan" , "12" ,"C")
 ]
 
 cursor.executemany("""
